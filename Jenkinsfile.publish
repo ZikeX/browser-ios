@@ -20,7 +20,7 @@ node('mac-vm-host') {
 
         config.vm.provision "shell", privileged: false, run: "always", inline: <<-SHELL
           rm -f slave.jar
-          wget #{ENV['JENKINS_URL']}/jnlpJars/slave.jar
+          curl #{ENV['JENKINS_URL']}/jnlpJars/slave.jar --output slave.jar
           nohup java -jar slave.jar -jnlpUrl #{ENV['JENKINS_URL']}/computer/#{ENV['NODE_ID']}/slave-agent.jnlp -secret #{ENV["NODE_SECRET"]} &
         SHELL
       end
@@ -32,7 +32,7 @@ node('mac-vm-host') {
         4, // CPU
         4000, // MEMOERY
         12000, // VNC port
-        true, // rebuild image
+        false, // rebuild image
     ) { nodeId ->
         node(nodeId) {
             stage('Checkout') {
