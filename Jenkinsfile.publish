@@ -48,15 +48,14 @@ node('mac-vm-host') {
             }
 
             stage('Prepare') {
-                sh '''#!/bin/bash -l
+                sh '''#!/bin/bash -l -x
                     which ruby
                     ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall)"
                     ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-                    gem install xcpretty -N
                     gem install cocoapods
                 '''
 
-                sh '''#!/bin/bash -l
+                sh '''#!/bin/bash -l -x
                     brew update
                     brew install gpg
                     brew install xctool
@@ -65,10 +64,10 @@ node('mac-vm-host') {
                     pod --version
                 '''
                 // load/restore carthage build directory
-                sh '''#!/bin/bash -l
+                sh '''#!/bin/bash -l -x
                     CART_CACHE=/tmp/carthage_cache_`md5 -q Cartfile`.tar; tar -xf $CART_CACHE ; echo A |./bootstrap.sh && tar -cf $CART_CACHE Carthage Cartfile.resolved
                 '''
-                sh '''#!/bin/bash -l
+                sh '''#!/bin/bash -l -x
                     yarn install
                     pod install
                     npm run dev-bundle
@@ -77,7 +76,7 @@ node('mac-vm-host') {
 
             stage('Build') {
                 timeout(20) {
-                    sh '''#!/bin/bash -l
+                    sh '''#!/bin/bash -l -x
                         xcodebuild -workspace Client.xcworkspace -scheme "Fennec" -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO -derivedDataPath clean build
                     '''
                 }
