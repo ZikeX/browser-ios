@@ -49,10 +49,6 @@ node('mac-vm-host') {
 
             stage('Prepare') {
                 sh '''#!/bin/bash -l
-                    \\curl -sSL https://get.rvm.io | bash -s stable
-                '''
-
-                sh '''#!/bin/bash -l
                     which ruby
                     ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall)"
                     ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
@@ -82,7 +78,6 @@ node('mac-vm-host') {
             stage('Build') {
                 timeout(20) {
                     sh '''#!/bin/bash -l
-                        rvm use ruby-2.4.0
                         xcodebuild -workspace Client.xcworkspace -scheme "Fennec" -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO -derivedDataPath clean build
                     '''
                 }
