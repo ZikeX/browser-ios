@@ -52,16 +52,27 @@ node('mac-vm-host') {
                     set -x
                     set -e
                     \\curl -sSL https://get.rvm.io | bash -s stable
+                '''
+
+                sh '''#!/bin/bash -l
+                    set -x
+                    set -e
                     rvm use ruby-2.4.0
                     ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall)"
                     ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+                    gem install xcpretty -N
+                    gem install cocoapods
+                '''
+
+                sh '''#!/bin/bash -l
+                    set -x
+                    set -e
+                    rvm use ruby-2.4.0
                     brew update
                     brew install gpg
                     brew install xctool
                     brew install carthage
                     brew install yarn
-                    gem install xcpretty -N
-                    gem install cocoapods
                     pod --version
                 '''
                 // load/restore carthage build directory
