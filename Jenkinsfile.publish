@@ -48,12 +48,13 @@ node('mac-vm-host') {
             }
 
             stage('Prepare') {
-                sh '''#!/bin/bash -l -x
+                sh '''#!/bin/bash -l
+                    set -e
+                    set -x
                     ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall)"
                     ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
                     brew update
                     brew install cocoapods
-                    brew install gpg
                     brew install xctool
                     brew install carthage
                     brew install yarn
@@ -61,10 +62,14 @@ node('mac-vm-host') {
 
                 // load/restore carthage build directory
                 sh '''#!/bin/bash -l -x
+                    set -e
+                    set -x
                     CART_CACHE=/tmp/carthage_cache_`md5 -q Cartfile`.tar; tar -xf $CART_CACHE ; echo A |./bootstrap.sh && tar -cf $CART_CACHE Carthage Cartfile.resolved
                 '''
 
                 sh '''#!/bin/bash -l -x
+                    set -e
+                    set -x
                     yarn install
                     pod install
                     npm run dev-bundle
